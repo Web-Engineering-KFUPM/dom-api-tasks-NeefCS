@@ -5,6 +5,8 @@ All tasks in one file (script.js)
 =======================================
 */
 
+document.addEventListener("DOMContentLoaded", () => {
+
 /*  
 =======================================
 TODO1: Welcome Board
@@ -20,6 +22,10 @@ inside the <p> element with id="t1-msg".
 document.getElementById("t1-msg").innerHTML = "Hello, World!";
 */
  
+const welcomeMsg = document.getElementById("t1-msg");
+welcomeMsg.textContent = "Hello, World! Welcome to City Life!";
+
+
 
 /*  
 =======================================
@@ -41,6 +47,12 @@ button.addEventListener("click", function () {
 });
 */
  
+const btn = document.getElementById("t2-btn");
+  const status = document.getElementById("t2-status");
+
+  btn.addEventListener("click", () => {
+    status.textContent = "You clicked the button! 🎉";
+  });
 
 /*  
 =======================================
@@ -69,6 +81,26 @@ data.content   // the quote text
 data.author    // the author
 */
  
+const quoteBtn = document.getElementById("t3-loadQuote");
+const quoteEl = document.getElementById("t3-quote");
+const authorEl = document.getElementById("t3-author");
+
+quoteBtn.addEventListener("click", async () => {
+  quoteEl.textContent = "Loading quote...";
+  authorEl.textContent = "";
+
+  try {
+    const res = await fetch("https://dummyjson.com/quotes/random");
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+
+    quoteEl.textContent = `"${data.quote}"`;
+    authorEl.textContent = `— ${data.author}`;
+  } catch (err) {
+    quoteEl.textContent = "Could not load a new quote 😢";
+    authorEl.textContent = "Try again later.";
+  }
+});
 
 /*  
 =======================================
@@ -94,3 +126,34 @@ data.main.temp      → temperature (°C)
 data.main.humidity  → humidity (%)
 data.wind.speed     → wind speed (m/s)
 */
+
+const weatherBtn = document.getElementById("t4-loadWx");
+  const tempEl = document.getElementById("t4-temp");
+  const humEl = document.getElementById("t4-hum");
+  const windEl = document.getElementById("t4-wind");
+  const errEl = document.getElementById("t4-err");
+
+  const API_KEY = "64ab3104dff2adb6ea9e4ad9dc6a2c70";
+const url = `https://api.openweathermap.org/data/2.5/weather?q=Dammam&appid=${API_KEY}&units=metric`;
+
+document.getElementById("t4-loadWx").addEventListener("click", async () => {
+  const errEl = document.getElementById("t4-err");
+  try {
+    errEl.textContent = "Loading…";
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
+    const data = await res.json();
+    document.getElementById("t4-temp").textContent = `${data.main.temp} °C`;
+    document.getElementById("t4-hum").textContent = `${data.main.humidity} %`;
+    document.getElementById("t4-wind").textContent = `${data.wind.speed} m/s`;
+    errEl.textContent = "";
+  } catch (err) {
+    console.error(err);
+    errEl.textContent = "⚠️ Could not load weather data.";
+  }
+});
+
+  
+
+});
